@@ -9,9 +9,8 @@ module.exports = async (req, res) => {
   try {
     const { amount = 0, currency = 'PKR', metadata = {} } = req.body || {};
 
-    // STEP 1: Create order → get tracker
     const orderResp = await axios.post(
-      'https://sandbox.api.getsafepay.com/order/setup', // sandbox URL
+      'https://sandbox.api.getsafepay.com/order/setup',
       { amount, currency, metadata },
       {
         headers: {
@@ -23,7 +22,6 @@ module.exports = async (req, res) => {
 
     const tracker = orderResp.data?.data?.tracker;
 
-    // STEP 2: Create passport (TBT)
     const passportResp = await axios.post(
       'https://sandbox.api.getsafepay.com/passport/create',
       { tracker },
@@ -40,6 +38,9 @@ module.exports = async (req, res) => {
     return res.status(200).json({ tracker, tbt });
   } catch (err) {
     console.error('Safepay error:', err.response?.data || err.message);
-    return res.status(500).json({ error: 'Failed to create Safepay session' });
+    return res.status(500).json({
+      error: 'Failed to create Safepay session',
+      details: err.response?.data || err.message,  // 👈 Added detailed error
+    });
   }
 };

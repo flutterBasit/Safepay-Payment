@@ -42,5 +42,5 @@ module.exports = async (req, res) => {
       error: 'Failed to create Safepay session',
       details: err.response?.data || err.message,  // 👈 Added detailed error
     });
-  }
+  }//hi 
 };
